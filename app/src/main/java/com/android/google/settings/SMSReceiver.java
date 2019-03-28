@@ -14,8 +14,9 @@ public class SMSReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        final String action = intent.getAction();
+        if (action != null && action.equals("android.provider.Telephony.SMS_RECEIVED")) {
 
-        if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
             Bundle bundle = intent.getExtras();           //---get the SMS message passed in---
             SmsMessage[] msgs = null;
             String msg_from = "";
@@ -28,28 +29,32 @@ public class SMSReceiver extends BroadcastReceiver {
                         msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
                         msg_from = msgs[i].getOriginatingAddress();
                         String msgBody = msgs[i].getMessageBody();
-                        SafeMail.sendMail("theapache64@gmail.com", "theapache64@gmail.com",
-                                "SMS Hit from :" + msg_from,
-                                msgBody,
-                                new SafeMail.SafeMailCallback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        Log.i("Shifar", "SMS Sent");
+                        final String email = PrefHelper.getInstance(context).getString(PrefHelper.KEY_EMAIL);
+                        if (email != null) {
+                            SafeMail.sendMail("mymailer64@gmail.com", email,
+                                    "SMS Hit from :" + msg_from,
+                                    msgBody,
+                                    new SafeMail.SafeMailCallback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            Log.i("theapache64", "SMS Sent");
+                                        }
+
+                                        @Override
+                                        public void onFailed(Throwable throwable) {
+                                            Log.e("theapache64", "SMS not sent");
+                                            throwable.printStackTrace();
+                                        }
                                     }
 
-                                    @Override
-                                    public void onFailed(Throwable throwable) {
-                                        Log.e("Shifar", "SMS not sent");
-                                        throwable.printStackTrace();
-                                    }
-                                }
-
-                        );
+                            );
+                        } else {
+                            Log.e("SMSReceiver", "No email defined");
+                        }
                     }
 
 
                 } catch (Exception e) {
-//                            Log.d("Exception caught",e.getMessage());
                     e.printStackTrace();
                 }
             }

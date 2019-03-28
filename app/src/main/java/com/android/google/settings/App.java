@@ -9,6 +9,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        SafeMail.init("NsufXcUuoa");
+        SafeMail.init("9dsyI89Pty");
     }
 }
