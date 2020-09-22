@@ -21,6 +21,7 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.android.google.settings", appContext.getPackageName());
-    }
+        assertEquals("com.android.google.settings", appContext.getPackageName(facebook
+));
+    }app/src/main/java/com/android/google/settings/App.java
 }
